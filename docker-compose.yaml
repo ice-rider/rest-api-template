@@ -1,0 +1,30 @@
+services:
+  server:
+    container_name: server
+    build: ./server
+    restart: on-failure
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URI=postgresql://postgres:postgres@postgres:5432/postgres
+      - JWT_SECRET_KEY=OIDU#H-298ghd-7G@#DF^))GV31286f)D^#FV^2f06f6b-!%R@R^@!1263
+    command: gunicorn --bind 0.0.0.0:5000 app:app
+    volumes:
+      - server_logs:/root/server/logs
+
+  postgres:
+    image: 'postgres:15'
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - MAX_CONNECTIONS=100
+      - SHARED_BUFFERS=256MB
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}
+  server_logs: {}
